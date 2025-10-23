@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>OData Grabber</title>
+	<link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+	<header>
+		<h1>OData Grabber</h1>
+		<div class="actions">
+			<button id="settingsBtn" title="Open Settings">Settings</button>
+			<button id="clearBtn" title="Clear captured items">Clear</button>
+		</div>
+	</header>
+	<main>
+		<div id="emptyState" class="muted">No matches captured yet.</div>
+		<ul id="list" class="list"></ul>
+	</main>
+	<footer>
+		<div id="hint" class="muted">Developed by Natanael Marian.</div>
+	</footer>
+	<script type="module" src="popup.js"></script>
+</body>
+</html>
