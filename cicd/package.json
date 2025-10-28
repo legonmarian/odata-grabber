@@ -1,0 +1,21 @@
+{
+  "name": "odata-grabber-cicd",
+  "version": "1.0.0",
+  "description": "CI/CD utilities for OData Grabber Chrome Extension",
+  "type": "module",
+  "main": "fetch-token.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "jose": "^5.2.0",
+    "node-fetch": "^3.3.2"
+  },
+  "keywords": [
+    "chrome-extension",
+    "cicd",
+    "oauth"
+  ],
+  "author": "Natanael Marian",
+  "license": "MIT"
+}
