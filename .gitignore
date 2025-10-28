@@ -1,0 +1,48 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+workflow/node_modules/
+
+# Testing / coverage
+coverage/
+
+# Build output
+build/
+dist/
+.out/
+
+# Environment files
+.env
+.env.*
+*.env
+workflow/.env*
+
+# OS / Editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Chrome extension key
+*.pem
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# Local secrets
+api-key.json

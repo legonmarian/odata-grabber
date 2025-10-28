@@ -1,4 +1,4 @@
-import { loadSettings } from './settings.js';
+import { loadSettings } from '../utils/settings.js';
 
 let _whitelistCache = { pattern: undefined, regex: null };
 

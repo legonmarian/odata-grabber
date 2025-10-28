@@ -1,0 +1,77 @@
+name: Publish Chrome Extension
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: |
+        cd cicd
+        npm install
+        
+    - name: Compress src folder
+      run: |
+        cd src
+        zip -r ../extension.zip .
+        
+    - name: Fetch Google OAuth Token
+      id: fetch-token
+      run: |
+        # Create api-key.json from GitHub secret
+        echo '${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}' > api-key.json
+        
+        cd cicd
+        TOKEN=$(node fetch-token.js | grep 'access_token:' | cut -d' ' -f2)
+        echo "token=$TOKEN" >> $GITHUB_OUTPUT
+        
+    - name: Upload extension to Chrome Web Store
+      run: |
+        # Upload the extension package
+        UPLOAD_RESPONSE=$(curl -X POST \
+          -H "Authorization: Bearer ${{ steps.fetch-token.outputs.token }}" \
+          -H "x-goog-api-version: 2" \
+          -T extension.zip \
+          "https://chromewebstore.googleapis.com/upload/chromewebstore/v1.1/items")
+        
+        echo "Upload response: $UPLOAD_RESPONSE"
+        
+        # Extract item ID from response
+        ITEM_ID=$(echo $UPLOAD_RESPONSE | jq -r '.id')
+        echo "ITEM_ID=$ITEM_ID" >> $GITHUB_ENV
+        
+    - name: Publish extension
+      run: |
+        # Publish the extension
+        PUBLISH_RESPONSE=$(curl -X POST \
+          -H "Authorization: Bearer ${{ steps.fetch-token.outputs.token }}" \
+          -H "x-goog-api-version: 2" \
+          -H "Content-Type: application/json" \
+          -d '{"target": "default"}' \
+          "https://chromewebstore.googleapis.com/chromewebstore/v1.1/items/${{ vars.ITEM_ID }}/publish")
+        
+        echo "Publish response: $PUBLISH_RESPONSE"
+        
+    - name: Check publish status
+      run: |
+        # Check the status of the published extension
+        STATUS_RESPONSE=$(curl -H "Authorization: Bearer ${{ steps.fetch-token.outputs.token }}" \
+          -H "x-goog-api-version: 2" \
+          "https://chromewebstore.googleapis.com/chromewebstore/v1.1/items/${{ vars.ITEM_ID }}")
+        
+        echo "Status response: $STATUS_RESPONSE"

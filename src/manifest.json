@@ -7,12 +7,12 @@
   "permissions": ["webRequest", "storage"],
   "host_permissions": ["<all_urls>"],
   "background": {
-    "service_worker": "background.js",
+    "service_worker": "background/service-worker.js",
     "type": "module"
   },
   "action": {
     "default_title": "OData Grabber",
-    "default_popup": "popup.html"
+    "default_popup": "popup/popup.html"
   },
-  "options_page": "options.html"
+  "options_page": "options/options.html"
 }

@@ -1,4 +1,4 @@
-import { settingsSchema, loadSettings, saveSettings, resetSettings, coerceValueBySchema } from './settings.js';
+import { settingsSchema, loadSettings, saveSettings, resetSettings, coerceValueBySchema } from '../utils/settings.js';
 
 const form = document.getElementById('settingsForm');
 const toast = document.getElementById('toast');

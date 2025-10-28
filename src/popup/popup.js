@@ -3,7 +3,7 @@ const emptyStateEl = document.getElementById('emptyState');
 const clearBtn = document.getElementById('clearBtn');
 const settingsBtn = document.getElementById('settingsBtn');
 
-import { loadSettings } from './settings.js';
+import { loadSettings } from '../utils/settings.js';
 
 let ADT_BASE = 'adt://DCL/sap/bc/adt/businessservices/bindings';
 
@@ -78,7 +78,7 @@ if (settingsBtn) {
 		if (chrome.runtime.openOptionsPage) {
 			chrome.runtime.openOptionsPage();
 		} else {
-			window.open(chrome.runtime.getURL('options.html'));
+			window.open(chrome.runtime.getURL('options/options.html'));
 		}
 	});
 }
