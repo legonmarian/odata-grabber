@@ -57,15 +57,20 @@ function render(matches) {
 async function load() {
 	const s = await loadSettings();
 	ADT_BASE = s.adtBase || ADT_BASE;
-	chrome.runtime.sendMessage({ type: 'getMatches' }, (resp) => {
-		render((resp && resp.matches) || []);
-	});
+    chrome.runtime.sendMessage({ type: 'getMatches' }, (resp) => {
+        if (chrome.runtime && chrome.runtime.lastError) {
+            render([]);
+            return;
+        }
+        render((resp && resp.matches) || []);
+    });
 }
 
 clearBtn.addEventListener('click', () => {
-	chrome.runtime.sendMessage({ type: 'clearMatches' }, (resp) => {
-		render([]);
-	});
+    chrome.runtime.sendMessage({ type: 'clearMatches' }, (_resp) => {
+        // In case background isn't ready, just clear UI
+        render([]);
+    });
 });
 
 if (settingsBtn) {
