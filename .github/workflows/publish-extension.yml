@@ -64,12 +64,3 @@ jobs:
           "https://chromewebstore.googleapis.com/chromewebstore/v1.1/items/${{ vars.ITEM_ID }}/publish")
         
         echo "Publish response: $PUBLISH_RESPONSE"
-        
-    - name: Check publish status
-      run: |
-        # Check the status of the published extension
-        STATUS_RESPONSE=$(curl -H "Authorization: Bearer ${{ steps.fetch-token.outputs.token }}" \
-          -H "x-goog-api-version: 2" \
-          "https://chromewebstore.googleapis.com/chromewebstore/v1.1/items/${{ vars.ITEM_ID }}")
-        
-        echo "Status response: $STATUS_RESPONSE"
