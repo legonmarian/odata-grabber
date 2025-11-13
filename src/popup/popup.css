@@ -11,7 +11,7 @@ body {
 header {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: flex-end;
 	padding: 10px 12px;
 	border-bottom: 1px solid #e2e8f0;
 }
@@ -19,6 +19,12 @@ header {
 h1 {
 	font-size: 14px;
 	margin: 0;
+}
+
+.actions {
+	display: flex;
+	gap: 6px;
+	align-items: center;
 }
 
 .actions button, .copyBtn, #clearBtn {
@@ -81,5 +87,29 @@ code {
 
 footer {
 	border-top: 1px solid #e2e8f0;
-	padding: 8px 12px;
+	padding: 10px 12px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	background: #f8fafc;
+}
+
+footer h1 {
+	font-size: 13px;
+	margin: 0;
+	font-weight: 600;
+	color: #1e293b;
+	letter-spacing: 0.3px;
+}
+
+footer .separator {
+	color: #94a3b8;
+	font-size: 12px;
+}
+
+footer #hint {
+	font-size: 11px;
+	margin: 0;
 }

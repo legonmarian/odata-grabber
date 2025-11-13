@@ -14,6 +14,19 @@ h1 {
 	font-size: 16px;
 }
 
+h2.section-header {
+	margin: 24px 0 12px 0;
+	font-size: 14px;
+	font-weight: 600;
+	color: #1e293b;
+	border-bottom: 1px solid #e2e8f0;
+	padding-bottom: 8px;
+}
+
+h2.section-header:first-child {
+	margin-top: 0;
+}
+
 main {
 	padding: 16px;
 }

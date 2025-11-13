@@ -11,24 +11,45 @@ function showToast(msg) {
 
 function renderForm(values) {
 	form.innerHTML = '';
+	
+	// Group entries by section
+	const sections = {};
 	for (const entry of settingsSchema) {
-		const field = document.createElement('div');
-		field.className = 'field';
-		const label = document.createElement('label');
-		label.setAttribute('for', entry.key);
-		label.textContent = entry.name;
-		const input = document.createElement('input');
-		input.type = 'text';
-		input.id = entry.key;
-		input.name = entry.key;
-		input.value = values[entry.key] ?? '';
-		const desc = document.createElement('div');
-		desc.className = 'description';
-		desc.textContent = entry.description;
-		field.appendChild(label);
-		field.appendChild(input);
-		field.appendChild(desc);
-		form.appendChild(field);
+		const section = entry.section;
+		if (!sections[section]) {
+			sections[section] = [];
+		}
+		sections[section].push(entry);
+	}
+	
+	// Render sections
+	for (const [sectionName, entries] of Object.entries(sections)) {
+		// Add section header
+		const sectionHeader = document.createElement('h2');
+		sectionHeader.className = 'section-header';
+		sectionHeader.textContent = sectionName;
+		form.appendChild(sectionHeader);
+		
+		// Add fields for this section
+		for (const entry of entries) {
+			const field = document.createElement('div');
+			field.className = 'field';
+			const label = document.createElement('label');
+			label.setAttribute('for', entry.key);
+			label.textContent = entry.name;
+			const input = document.createElement('input');
+			input.type = 'text';
+			input.id = entry.key;
+			input.name = entry.key;
+			input.value = values[entry.key] ?? '';
+			const desc = document.createElement('div');
+			desc.className = 'description';
+			desc.textContent = entry.description;
+			field.appendChild(label);
+			field.appendChild(input);
+			field.appendChild(desc);
+			form.appendChild(field);
+		}
 	}
 
 	const actions = document.createElement('div');

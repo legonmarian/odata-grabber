@@ -2,8 +2,10 @@ const listEl = document.getElementById('list');
 const emptyStateEl = document.getElementById('emptyState');
 const clearBtn = document.getElementById('clearBtn');
 const settingsBtn = document.getElementById('settingsBtn');
+const openInEclipseBtn = document.getElementById('openInEclipseBtn');
 
 import { loadSettings } from '../utils/settings.js';
+import { buildAdtHref as buildAbapGitAdtHref } from '../utils/abapgit.js';
 
 let ADT_BASE = 'adt://DCL/sap/bc/adt/businessservices/bindings';
 
@@ -54,9 +56,57 @@ function render(matches) {
 	}
 }
 
+async function checkAndShowEclipseButton() {
+	try {
+		const settings = await loadSettings();
+		const whitelistRegex = settings.abapgitWhitelistRegex || '^https://github\\.com/.*';
+		const adtProjectName = settings.adtProjectName || 'DCL';
+		
+		// Get current tab URL
+		const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+		if (!tab || !tab.url) {
+			openInEclipseBtn.style.display = 'none';
+			return;
+		}
+		
+		const currentUrl = tab.url;
+		
+		// Check if URL matches whitelist regex
+		try {
+			const regex = new RegExp(whitelistRegex);
+			if (!regex.test(currentUrl)) {
+				openInEclipseBtn.style.display = 'none';
+				return;
+			}
+		} catch (e) {
+			// Invalid regex, hide button
+			openInEclipseBtn.style.display = 'none';
+			return;
+		}
+		
+		// Try to build ADT href - if it throws, hide button
+		try {
+			const adtLink = buildAbapGitAdtHref(currentUrl, adtProjectName);
+			// Success - show button and store the link
+			openInEclipseBtn.dataset.adtLink = adtLink;
+			openInEclipseBtn.style.display = 'inline-block';
+		} catch (e) {
+			// buildAbapGitAdtHref failed, hide button
+			openInEclipseBtn.style.display = 'none';
+		}
+	} catch (e) {
+		// Any error, hide button
+		openInEclipseBtn.style.display = 'none';
+	}
+}
+
 async function load() {
 	const s = await loadSettings();
 	ADT_BASE = s.adtBase || ADT_BASE;
+	
+	// Check and show Eclipse button
+	await checkAndShowEclipseButton();
+	
     chrome.runtime.sendMessage({ type: 'getMatches' }, (resp) => {
         if (chrome.runtime && chrome.runtime.lastError) {
             render([]);
@@ -83,9 +133,27 @@ if (settingsBtn) {
 	});
 }
 
+if (openInEclipseBtn) {
+	openInEclipseBtn.addEventListener('click', () => {
+		const adtLink = openInEclipseBtn.dataset.adtLink;
+		if (adtLink) {
+			// Open ADT link - create a temporary anchor element for custom protocol links
+			const link = document.createElement('a');
+			link.href = adtLink;
+			link.target = '_blank';
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		}
+	});
+}
+
 chrome.runtime.onMessage.addListener((msg) => {
 	if (msg && msg.type === 'newMatch') {
 		load();
+	}
+	if (msg && msg.type === 'refreshSettings') {
+		checkAndShowEclipseButton();
 	}
 });
 

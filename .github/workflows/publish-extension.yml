@@ -41,17 +41,14 @@ jobs:
     - name: Upload extension to Chrome Web Store
       run: |
         # Upload the extension package
-        UPLOAD_RESPONSE=$(curl -X POST \
+        UPLOAD_RESPONSE=$(curl -X PUT \
           -H "Authorization: Bearer ${{ steps.fetch-token.outputs.token }}" \
           -H "x-goog-api-version: 2" \
+          -H "Content-Type: application/zip" \
           -T extension.zip \
-          "https://chromewebstore.googleapis.com/upload/chromewebstore/v1.1/items")
+          "https://chromewebstore.googleapis.com/upload/chromewebstore/v1.1/items/${{ vars.ITEM_ID }}")
         
         echo "Upload response: $UPLOAD_RESPONSE"
-        
-        # Extract item ID from response
-        ITEM_ID=$(echo $UPLOAD_RESPONSE | jq -r '.id')
-        echo "ITEM_ID=$ITEM_ID" >> $GITHUB_ENV
         
     - name: Publish extension
       run: |
